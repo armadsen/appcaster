@@ -1,5 +1,5 @@
 var async = require('async');
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 var models = require('./../../models');
 var salt = bcrypt.genSaltSync(10);
 var hash = bcrypt.hashSync('password', salt);

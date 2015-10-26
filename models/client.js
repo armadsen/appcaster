@@ -1,5 +1,5 @@
 var db = require('./../db');
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 var sql = require('sql');
 var utils = require('./utils');
 
