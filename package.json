@@ -1,6 +1,6 @@
 {
-  "name": "appcast",
-  "version": "0.0.0",
+  "name": "openreelbuilds",
+  "version": "0.0.1",
   "description": "A service for Sparkle releases",
   "main": "server.js",
   "scripts": {
