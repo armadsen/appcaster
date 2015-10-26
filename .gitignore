@@ -1,2 +1,4 @@
 config/development.js
 .migrate
+
+node_modules/*
