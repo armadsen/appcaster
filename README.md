@@ -8,7 +8,7 @@ The Appcaster documentation can be found in the [Appcaster GitHub wiki](https://
 
 Seed database with:
 
-```c
+```sql
 CREATE TABLE apps (
 id serial PRIMARY KEY,
 url_slug varchar (20) NOT NULL CHECK (url_slug <> '') UNIQUE,
