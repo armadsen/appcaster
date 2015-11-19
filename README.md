@@ -8,7 +8,11 @@ The Appcaster documentation can be found in the [Appcaster GitHub wiki](https://
 
 Seed database with:
 
-CREATE TABLE apps (                                                                                                                                                 id serial PRIMARY KEY,                                                                                                                                                             url_slug varchar (20) NOT NULL CHECK (url_slug <> '') UNIQUE,                                                                                                                      name varchar (100) NOT NULL CHECK (name <> '')
+```sql
+CREATE TABLE apps (
+id serial PRIMARY KEY,
+url_slug varchar (20) NOT NULL CHECK (url_slug <> '') UNIQUE,
+name varchar (100) NOT NULL CHECK (name <> '')
 );
 
 CREATE TABLE channels (
@@ -51,3 +55,4 @@ build_id int references builds(id) ON DELETE CASCADE,
 channel_id int references channels(id) ON DELETE CASCADE,
 created_at timestamp DEFAULT CURRENT_TIMESTAMP
 );
+```
