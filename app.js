@@ -81,6 +81,7 @@ app.post('/apps/:url_slug/builds', middleware.apiAuth(), routes.builds.create);
 app.get('/apps/:url_slug/:channel_url_slug/appcast.xml', routes.apps.show);
 
 app.get('/apps/:url_slug/:channel_url_slug/download/latest', routes.apps.downloadLatest);
+app.get('/apps/:url_slug/:channel_url_slug/download/latest_dmg', routes.apps.downloadLatestDMG);
 app.get('/apps/:url_slug/:channel_url_slug/download/:version/:filename', routes.apps.download);
 app.get('/apps/:url_slug/:channel_url_slug/release-notes/:version\.html', routes.apps.releaseNotes);
 

@@ -66,6 +66,24 @@ module.exports = {
     });
   },
 
+  downloadLatestDMG: function(req, res, next) {
+    Appcast.findLatest({
+      app_url: req.param('url_slug'),
+      channel_url: req.param('channel_url_slug')
+    }, function(err, appcast) {
+      if (err) return next(err);
+
+      if (!appcast) {
+        return next(new errors.NotFound('Appcast not found'));
+      }
+
+      req.app.emit('build:downloaded', appcast.build);
+	
+	  var dmgURL = appcast.build.download_url.replace(/\.(zip)($|\?)/, '.dmg$2')
+      res.redirect(dmgURL);
+    });
+  },
+
   releaseNotes: function(req, res, next) {
     Appcast.findBuildByVersion({
       app_url: req.param('url_slug'),
