@@ -103,7 +103,7 @@ module.exports = {
         layout: 'release-notes-layout'
       });
     });
-  }
+  },
 
   latestReleaseNotes: function(req, res, next) {
     Appcast.findLatest({
