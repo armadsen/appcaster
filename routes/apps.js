@@ -104,4 +104,24 @@ module.exports = {
       });
     });
   }
+
+  latestReleaseNotes: function(req, res, next) {
+    Appcast.findLatest({
+      app_url: req.param('url_slug'),
+      channel_url: req.param('channel_url_slug')
+    }, function(err, appcast) {
+      if (err) return next(err);
+
+      if (!appcast) {
+        return next(new errors.NotFound('Appcast not found'));
+      }
+
+      res.render('release_notes', {
+        appcast: appcast,
+        build: appcast.build,
+        notes: marked(appcast.build.notes || ''),
+        layout: 'release-notes-layout'
+      });
+    });
+  }
 };
