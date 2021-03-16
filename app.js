@@ -10,6 +10,8 @@ var GitHubStrategy = require('passport-github').Strategy;
 var db = require('./db');
 var Build = require('./models/build');
 
+console.log("Started running");
+
 app.locals = require('./helpers');
 app.locals.rootUrl = config.rootUrl;
 
@@ -67,6 +69,7 @@ app.get('/', function(res, req) {
 app.get('/auth/github', passport.authenticate('github'));
 
 function authSuccess(req, res) {
+  console.log("Auth finished");
   res.redirect('/admin/apps');
 }
 
