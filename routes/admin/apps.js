@@ -1,6 +1,8 @@
 var App = require('./../../models').App;
 var errors = require('./../../errors');
 
+console.log("Running admin/apps route");
+
 module.exports = {
   index: function(req, res, next) {
     App.findAll(function(err, apps) {

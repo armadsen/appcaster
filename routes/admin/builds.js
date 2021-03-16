@@ -4,6 +4,8 @@ var Channel = require('./../../models').Channel;
 var errors = require('./../../errors');
 var Release = require('./../../models').Release;
 
+console.log("Running admin/builds route");
+
 module.exports = {
   index: function(req, res, next) {
     Build.findAll(function(err, builds) {

@@ -1,3 +1,5 @@
+console.log("Running admin/index route");
+
 module.exports = {
   apps: require('./apps'),
   builds: require('./builds'),
