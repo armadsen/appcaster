@@ -9,6 +9,7 @@ module.exports = Middleware = {
   flash: require('./flash'),
 
   apiAuth: function() {
+    console.log("Running apiAuth")
     return express.basicAuth(function(httpUser, httpPassword, next) {
       Client.auth(httpUser, httpPassword, function(err, user) {
         if (err) {
@@ -27,6 +28,7 @@ module.exports = Middleware = {
       if (err) {
         next();
       } else {
+        console.log("Redirecting to admin/apps after auth")
         res.redirect('/admin/apps');
       }
     });
@@ -34,6 +36,7 @@ module.exports = Middleware = {
 
   checkUser: function(req, res, next) {
     if (config.users.github.indexOf(req.session.passport.user.username) !== -1) {
+      console.log("User found")
       res.locals.user = req.session.passport.user;
       next();
     } else {

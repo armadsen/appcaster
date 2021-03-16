@@ -6,6 +6,7 @@ console.log("Running admin/apps route");
 module.exports = {
   index: function(req, res, next) {
     App.findAll(function(err, apps) {
+      console.log("App.findAll something something")
       if (err) return next(err);
       res.render('admin/apps/index', { flash: req.flash(), apps: apps });
     });
