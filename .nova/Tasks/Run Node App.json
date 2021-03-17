@@ -1,0 +1,13 @@
+{
+  "actions" : {
+    "run" : {
+      "enabled" : true,
+      "script" : "node .\/bin\/www"
+    }
+  },
+  "environment" : {
+    "DEBUG" : "express:*"
+  },
+  "identifier" : "040C8528-73B0-458B-AE66-1F2D50C0A895",
+  "openLogOnRun" : "start"
+}
