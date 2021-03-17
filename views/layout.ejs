@@ -11,11 +11,11 @@
   <link rel="shortcut icon" href="/favicon.ico">
 </head>
 <body>
-  <% include header %>
+  <% include('header') %>
   <div class="container">
-    <% include flash %>
+    <% include('flash') %>
     <%- body %>
-    <% include footer %>
+    <% include('footer') %>
   </div>
 </body>
 </html>

@@ -1,17 +1,18 @@
-var App = require('./../models').App;
-var Client = require('./../models').Client;
-var express = require('express');
-var errors = require('./../errors');
-var config = require('./../config');
+var App = require("./../models").App;
+var Client = require("./../models").Client;
+var express = require("express");
+var errors = require("./../errors");
+var config = require("./../config");
+var basicAuth = require("express-basic-auth");
 var Middleware;
 
 module.exports = Middleware = {
-  flash: require('./flash'),
+  flash: require("./flash"),
 
-  apiAuth: function() {
-    console.log("Running apiAuth")
-    return express.basicAuth(function(httpUser, httpPassword, next) {
-      Client.auth(httpUser, httpPassword, function(err, user) {
+  apiAuth: function () {
+    return basicAuth(function (httpUser, httpPassword, next) {
+      console.log("Running apiAuth");
+      Client.auth(httpUser, httpPassword, function (err, user) {
         if (err) {
           next(err);
         } else if (user) {
@@ -23,32 +24,34 @@ module.exports = Middleware = {
     });
   },
 
-  redirectIfSignedIn: function(req, res, next) {
-    Middleware.requiresUser(req, res, function(err) {
+  redirectIfSignedIn: function (req, res, next) {
+    Middleware.requiresUser(req, res, function (err) {
       if (err) {
         next();
       } else {
-        console.log("Redirecting to admin/apps after auth")
-        res.redirect('/admin/apps');
+        console.log("Redirecting to admin/apps after auth");
+        res.redirect("/admin/apps");
       }
     });
   },
 
-  checkUser: function(req, res, next) {
-    if (config.users.github.indexOf(req.session.passport.user.username) !== -1) {
-      console.log("User found")
+  checkUser: function (req, res, next) {
+    if (
+      config.users.github.indexOf(req.session.passport.user.username) !== -1
+    ) {
+      console.log("User found");
       res.locals.user = req.session.passport.user;
       next();
     } else {
-      next(new errors.AuthError('Not authorized for this service'));
+      next(new errors.AuthError("Not authorized for this service"));
     }
   },
 
-  loadAllApps: function(req, res, next) {
-    App.findAll(function(err, apps) {
+  loadAllApps: function (req, res, next) {
+    App.findAll(function (err, apps) {
       if (err) return next(err);
 
-      res.locals.apps = apps.map(function(app) {
+      res.locals.apps = apps.map(function (app) {
         return [app.id, app.name];
       });
 
@@ -56,12 +59,12 @@ module.exports = Middleware = {
     });
   },
 
-  navigation: function(req, res, next) {
-    res.locals.nav = function(page) {
-      return res.locals._currentPage.match(page) ? ' class="active"' : '';
+  navigation: function (req, res, next) {
+    res.locals.nav = function (page) {
+      return res.locals._currentPage.match(page) ? ' class="active"' : "";
     };
 
-    res.nav = function(page) {
+    res.nav = function (page) {
       res.locals._currentPage = page;
     };
 
@@ -69,11 +72,11 @@ module.exports = Middleware = {
     next();
   },
 
-  requiresUser: function(req, res, next) {
+  requiresUser: function (req, res, next) {
     if (req.session.passport && req.session.passport.user) {
       Middleware.checkUser(req, res, next);
     } else {
-      next(new errors.AuthError('Not signed in'));
+      next(new errors.AuthError("Not signed in"));
     }
-  }
+  },
 };
