@@ -1,6 +1,6 @@
 var util = require('util');
 var ejs = require('ejs');
-var h = require('ejs/lib/utils').escape;
+var h = require('ejs/lib/utils').escapeXML;
 var formatters = require('./formatters');
 
 function humanizeField(field) {
