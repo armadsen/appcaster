@@ -4,7 +4,7 @@
 
 <form method="post" action="/admin/channels/<%= channel.id %>" class="" role="form">
   <input type="hidden" name="_method" value="patch">
-  <% include fields %>
+  <% include('fields') %>
   <button type="submit" class="btn btn-primary">Save changes</button>
 </form>
 
