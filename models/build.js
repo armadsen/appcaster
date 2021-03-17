@@ -1,85 +1,112 @@
-var async = require('async');
-var App = require('./app');
-var Channel = require('./channel');
-var db = require('./../db');
-var Release = require('./release');
-var sql = require('sql');
-var utils = require('./utils');
+var async = require("async");
+var App = require("./app");
+var Channel = require("./channel");
+var db = require("./../db");
+var Release = require("./release");
+var sql = require("node-sql-2");
+var utils = require("./utils");
 
 function Build() {
   this.schema = Build.schema;
 }
 
 Build.schema = sql.define({
-  name: 'builds',
+  name: "builds",
   columns: [
-    { name: 'id', dataType: 'serial', primaryKey: true },
-    { name: 'app_id', dataType: 'int references apps(id) ON DELETE CASCADE NOT NULL' },
-    { name: 'title', dataType: "varchar(100) NOT NULL CHECK (title <> '')" },
-    { name: 'filename', dataType: "varchar(100) NOT NULL CHECK (filename <> '')" },
-    { name: 'identifier', dataType: "varchar(100) NOT NULL CHECK (identifier <> '')" },
-    { name: 'version', dataType: "varchar(20) NOT NULL CHECK (version <> ''), CONSTRAINT unique_version_and_app UNIQUE (app_id, version)" },
-    { name: 'version_string', dataType: 'varchar(100)' },
-    { name: 'minimum_system_version', dataType: 'varchar(20)' },
-    { name: 'length', dataType: 'bigint NOT NULL' },
-    { name: 'download_url', dataType: 'varchar(255)' },
-    { name: 'signature', dataType: "varchar(100) NOT NULL CHECK (signature <> '')" },
-    { name: 'publication_date', dataType: 'timestamp DEFAULT CURRENT_TIMESTAMP' },
-    { name: 'download_limit', dataType: 'int DEFAULT 0' },
-    { name: 'downloads', dataType: 'int DEFAULT 0' },
-    { name: 'notes', dataType: 'text' }
-  ]
+    { name: "id", dataType: "serial", primaryKey: true },
+    {
+      name: "app_id",
+      dataType: "int references apps(id) ON DELETE CASCADE NOT NULL",
+    },
+    { name: "title", dataType: "varchar(100) NOT NULL CHECK (title <> '')" },
+    {
+      name: "filename",
+      dataType: "varchar(100) NOT NULL CHECK (filename <> '')",
+    },
+    {
+      name: "identifier",
+      dataType: "varchar(100) NOT NULL CHECK (identifier <> '')",
+    },
+    {
+      name: "version",
+      dataType:
+        "varchar(20) NOT NULL CHECK (version <> ''), CONSTRAINT unique_version_and_app UNIQUE (app_id, version)",
+    },
+    { name: "version_string", dataType: "varchar(100)" },
+    { name: "minimum_system_version", dataType: "varchar(20)" },
+    { name: "length", dataType: "bigint NOT NULL" },
+    { name: "download_url", dataType: "varchar(255)" },
+    {
+      name: "signature",
+      dataType: "varchar(100) NOT NULL CHECK (signature <> '')",
+    },
+    {
+      name: "publication_date",
+      dataType: "timestamp DEFAULT CURRENT_TIMESTAMP",
+    },
+    { name: "download_limit", dataType: "int DEFAULT 0" },
+    { name: "downloads", dataType: "int DEFAULT 0" },
+    { name: "notes", dataType: "text" },
+  ],
 });
 
-Build.countDownload = function(build) {
-  db.query('UPDATE builds SET downloads = downloads + 1 WHERE id = $1::int', [build.id], function(err, result) {
-    if (err) console.error(err);
-  });
+Build.countDownload = function (build) {
+  db.query(
+    "UPDATE builds SET downloads = downloads + 1 WHERE id = $1::int",
+    [build.id],
+    function (err, result) {
+      if (err) console.error(err);
+    }
+  );
 };
 
-Build.createWithAppUrl = function(urlSlug, buildFields, cb) {
+Build.createWithAppUrl = function (urlSlug, buildFields, cb) {
   var channels = buildFields.channels;
   delete buildFields.channels;
 
-  App.findByUrlSlug(urlSlug, function(err, app) {
-    var query;
+  App.findByUrlSlug(
+    urlSlug,
+    function (err, app) {
+      var query;
 
-    if (err) return cb(new Error('No app found'));
+      if (err) return cb(new Error("No app found"));
 
-    buildFields.app_id = app.id;
-    query = this.schema.insert(buildFields).returning('*').toQuery();
+      buildFields.app_id = app.id;
+      query = this.schema.insert(buildFields).returning("*").toQuery();
 
-    db.query(query.text, query.values, function(err, result) {
-      var build = result && result.rows ? result.rows[0] : null;
+      db.query(query.text, query.values, function (err, result) {
+        var build = result && result.rows ? result.rows[0] : null;
 
-      // Release if any channels have been specified
-      if (channels && channels.length && build) {
-        Channel.getIdsForNames(app.id, channels, function(err, channelIds) {
-          if (err) return cb(err);
+        // Release if any channels have been specified
+        if (channels && channels.length && build) {
+          Channel.getIdsForNames(app.id, channels, function (err, channelIds) {
+            if (err) return cb(err);
 
-          if (channelIds && channelIds.length) {
-            Build.updateReleasesForBuildId(build.id, channelIds, function() {
+            if (channelIds && channelIds.length) {
+              Build.updateReleasesForBuildId(build.id, channelIds, function () {
+                cb(null, build);
+              });
+            } else {
               cb(null, build);
-            });
-          } else {
-            cb(null, build);
-          }
-        });
-      } else {
-        cb(err, build);
-      }
-    });
-  }.bind(this));
+            }
+          });
+        } else {
+          cb(err, build);
+        }
+      });
+    }.bind(this)
+  );
 };
 
-Build.create = function(fields, cb) {
-  var query = this.schema.insert(fields).returning('*').toQuery();
+Build.create = function (fields, cb) {
+  var query = this.schema.insert(fields).returning("*").toQuery();
 
   utils.findOne(query, cb);
 };
 
-Build.delete = function(id, cb) {
-  var query = this.schema.delete()
+Build.delete = function (id, cb) {
+  var query = this.schema
+    .delete()
     .from(this.schema)
     .where(this.schema.id.equals(id))
     .toQuery();
@@ -87,9 +114,10 @@ Build.delete = function(id, cb) {
   db.query(query.text, query.values, cb);
 };
 
-Build.find = function(id, cb) {
+Build.find = function (id, cb) {
   var app = App.schema;
-  var query = this.schema.select('builds.*, apps.name AS app_name')
+  var query = this.schema
+    .select("builds.*, apps.name AS app_name")
     .from(this.schema.join(app).on(this.schema.app_id.equals(app.id)))
     .where(this.schema.id.equals(id))
     .toQuery();
@@ -98,139 +126,185 @@ Build.find = function(id, cb) {
 };
 
 function channelsSubquery() {
-  var sql = 'array_to_string(';
-  sql += 'array(';
-  sql += 'SELECT channels.title FROM channels, releases ';
-  sql += 'WHERE channels.id = releases.channel_id AND releases.build_id = builds.id';
+  var sql = "array_to_string(";
+  sql += "array(";
+  sql += "SELECT channels.title FROM channels, releases ";
+  sql +=
+    "WHERE channels.id = releases.channel_id AND releases.build_id = builds.id";
   sql += "), ', ') ";
-  sql += 'AS released_channels';
+  sql += "AS released_channels";
   return sql;
 }
 
-Build.findAll = function(cb) {
+Build.findAll = function (cb) {
   var app = App.schema;
-  var query = this.schema.select('builds.*, apps.name AS app_name, ' + channelsSubquery())
+  var query = this.schema
+    .select("builds.*, apps.name AS app_name, " + channelsSubquery())
     .from(this.schema.join(app).on(this.schema.app_id.equals(app.id)))
-    .order('builds.publication_date DESC')
+    .order("builds.publication_date DESC")
     .toQuery();
 
   utils.findAll(query, cb);
 };
 
-Build.findAllForChannel = function(channel, cb) {
+Build.findAllForChannel = function (channel, cb) {
   var release = Release.schema;
-  var query = this.schema.select('builds.*')
+  var query = this.schema
+    .select("builds.*")
     .from(
-      this.schema.join(release)
-        .on(release.build_id.equals(this.schema.id).and(release.channel_id.equals(channel.id)))
+      this.schema
+        .join(release)
+        .on(
+          release.build_id
+            .equals(this.schema.id)
+            .and(release.channel_id.equals(channel.id))
+        )
     )
-    .where('(builds.download_limit = 0 OR builds.downloads < builds.download_limit)')
-    .order('builds.publication_date DESC')
+    .where(
+      "(builds.download_limit = 0 OR builds.downloads < builds.download_limit)"
+    )
+    .order("builds.publication_date DESC")
     .toQuery();
 
   utils.findAll(query, cb);
 };
 
-Build.create = function(fields, cb) {
-  var query = this.schema.insert(fields).returning('*').toQuery();
+Build.create = function (fields, cb) {
+  var query = this.schema.insert(fields).returning("*").toQuery();
 
   utils.findOne(query, cb);
 };
 
-Build.update = function(fields, cb) {
+Build.update = function (fields, cb) {
   var id = fields.id;
   delete fields.id;
 
-  if (fields.download_limit === '') {
+  if (fields.download_limit === "") {
     fields.download_limit = 0;
   }
 
-  var query = this.schema.update(fields)
+  var query = this.schema
+    .update(fields)
     .where(this.schema.id.equals(id))
-    .returning('*').toQuery();
+    .returning("*")
+    .toQuery();
 
   utils.findOne(query, cb);
 };
 
-Build.findForVersion = function(options, cb) {
+Build.findForVersion = function (options, cb) {
   var channel = options.channel;
   var release = Release.schema;
   var version = options.version;
 
-  var query = this.schema.select('builds.*')
+  var query = this.schema
+    .select("builds.*")
     .from(
-      this.schema.join(release)
-        .on(release.build_id.equals(this.schema.id)
-          .and(release.channel_id.equals(channel.id)))
+      this.schema
+        .join(release)
+        .on(
+          release.build_id
+            .equals(this.schema.id)
+            .and(release.channel_id.equals(channel.id))
+        )
     )
     .where(this.schema.version.equals(version))
-    .order('builds.publication_date DESC')
+    .order("builds.publication_date DESC")
     .toQuery();
 
   utils.findOne(query, cb);
 };
 
-Build.findLatest = function(options, cb) {
+Build.findLatest = function (options, cb) {
   var channel = options.channel;
   var release = Release.schema;
 
-  var query = this.schema.select('builds.*')
+  var query = this.schema
+    .select("builds.*")
     .from(
-      this.schema.join(release)
-        .on(release.build_id.equals(this.schema.id)
-          .and(release.channel_id.equals(channel.id)))
+      this.schema
+        .join(release)
+        .on(
+          release.build_id
+            .equals(this.schema.id)
+            .and(release.channel_id.equals(channel.id))
+        )
     )
-    .where('(builds.download_limit = 0 OR builds.downloads < builds.download_limit)')
-    .order('builds.publication_date DESC')
+    .where(
+      "(builds.download_limit = 0 OR builds.downloads < builds.download_limit)"
+    )
+    .order("builds.publication_date DESC")
     .toQuery();
 
   utils.findOne(query, cb);
 };
 
 function addAndRemoveReleases(build, releases, channelIds, cb) {
-  removeReleases(build, releases, channelIds, function(err) {
+  removeReleases(build, releases, channelIds, function (err) {
     if (err) return cb(err);
 
-    addReleases(build, releases, channelIds, function(err) {
+    addReleases(build, releases, channelIds, function (err) {
       cb(err, build);
     });
   });
 }
 
 function removeReleases(build, releases, channelIds, cb) {
-  async.eachSeries(releases, function(release, next) {
-    if (!channelIds.some(function(id) { return id === release.channel_id; })) {
-      Release.delete({
-        build_id: build.id,
-        channel_id: release.channel_id
-      }, next);
-    } else {
-      next();
-    }
-  }, cb);
+  async.eachSeries(
+    releases,
+    function (release, next) {
+      if (
+        !channelIds.some(function (id) {
+          return id === release.channel_id;
+        })
+      ) {
+        Release.delete(
+          {
+            build_id: build.id,
+            channel_id: release.channel_id,
+          },
+          next
+        );
+      } else {
+        next();
+      }
+    },
+    cb
+  );
 }
 
 function addReleases(build, releases, channelIds, cb) {
-  async.eachSeries(channelIds, function(channelId, next) {
-    if (!releases.some(function(r) { return r.channel_id === channelId; })) {
-      Release.create({
-        build_id: build.id,
-        channel_id: channelId
-      }, next);
-    } else {
-      next();
-    }
-  }, cb);
+  async.eachSeries(
+    channelIds,
+    function (channelId, next) {
+      if (
+        !releases.some(function (r) {
+          return r.channel_id === channelId;
+        })
+      ) {
+        Release.create(
+          {
+            build_id: build.id,
+            channel_id: channelId,
+          },
+          next
+        );
+      } else {
+        next();
+      }
+    },
+    cb
+  );
 }
 
-Build.updateReleasesForBuildId = function(id, channelIds, cb) {
+Build.updateReleasesForBuildId = function (id, channelIds, cb) {
   channelIds = utils.toIntegerArray(channelIds);
 
-  Build.find(id, function(err, build) {
+  Build.find(id, function (err, build) {
     if (err) return cb(err);
     if (!build) return cb();
 
-    Release.findAllForBuildId(build.id, function(err, releases) {
+    Release.findAllForBuildId(build.id, function (err, releases) {
       if (err) return cb(err);
 
       addAndRemoveReleases(build, releases, channelIds, cb);

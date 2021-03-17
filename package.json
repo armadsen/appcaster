@@ -4,6 +4,7 @@
   "description": "A service for Sparkle releases",
   "main": "server.js",
   "scripts": {
+    "serve": "./bin/www",
     "test": "NODE_ENV=test ./node_modules/.bin/mocha -t 0 test/init.js test/**/*_test.js test/*/**/*_test.js",
     "migrate": "./node_modules/.bin/migrate up",
     "migrate_create": "./node_modules/.bin/migrate create"
@@ -17,25 +18,31 @@
   "author": "Alex R. Young",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "~1.17.1",
-    "supertest": "~0.9.0"
+    "mocha": "^8.3.2",
+    "supertest": "^6.1.3"
   },
   "dependencies": {
-    "async": "~0.2.10",
-    "bcryptjs": "^2.3.0",
-    "ejs": "~0.8.5",
+    "async": "~3.2.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "cookie-session": "^1.4.0",
+    "ejs": ">=3.x",
     "express": "~4.17.1",
-    "express-ejs-layouts": "~0.3.1",
-    "marked": "~0.3.1",
-    "migrate": "~0.1.4",
-    "moment": "~2.5.1",
-    "passport": "~0.2.0",
-    "passport-github": "~0.1.5",
-    "pg": "~2.11.1",
-    "sql": "~0.35.0"
+    "express-basic-auth": "^1.2.0",
+    "express-ejs-layouts": "~2.5.0",
+    "marked": "~2.0.1",
+    "method-override": "^3.0.0",
+    "migrate": "~1.7.0",
+    "moment": "^2.29.1",
+    "morgan": "^1.10.0",
+    "node-sql-2": "~0.80.1",
+    "passport": "~0.4.1",
+    "passport-github": "~1.1.0",
+    "pg": "~8.5.1"
   },
   "engines": {
-    "node": ">= 15.0.0",
-    "npm": ">= 7.6.0"
+    "node": "~15",
+    "npm": "~7"
   }
 }

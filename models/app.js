@@ -1,49 +1,56 @@
-var db = require('./../db');
-var sql = require('sql');
-var utils = require('./utils');
+var db = require("./../db");
+var sql = require("node-sql-2");
+var utils = require("./utils");
 
 function App() {
   this.schema = App.schema;
 }
 
 App.schema = sql.define({
-  name: 'apps',
+  name: "apps",
   columns: [
-    { name: 'id', dataType: 'serial', primaryKey: true },
-    { name: 'url_slug', dataType: "varchar(20) NOT NULL CHECK (url_slug <> '')", unique: true },
-    { name: 'name', dataType: "varchar(100) NOT NULL CHECK (name <> '')" }
-  ]
+    { name: "id", dataType: "serial", primaryKey: true },
+    {
+      name: "url_slug",
+      dataType: "varchar(20) NOT NULL CHECK (url_slug <> '')",
+      unique: true,
+    },
+    { name: "name", dataType: "varchar(100) NOT NULL CHECK (name <> '')" },
+  ],
 });
 
-App.find = function(id, cb) {
-  var query = this.schema.select('*')
+App.find = function (id, cb) {
+  var query = this.schema
+    .select("*")
     .where(this.schema.id.equals(id))
     .toQuery();
 
   utils.findOne(query, cb);
 };
 
-App.findAll = function(cb) {
-  var query = this.schema.select('*').order('name').toQuery();
+App.findAll = function (cb) {
+  var query = this.schema.select("*").order("name").toQuery();
   utils.findAll(query, cb);
 };
 
-App.findByUrlSlug = function(urlSlug, cb) {
-  var query = this.schema.select('*')
+App.findByUrlSlug = function (urlSlug, cb) {
+  var query = this.schema
+    .select("*")
     .where(this.schema.url_slug.equals(urlSlug))
     .toQuery();
 
   utils.findOne(query, cb);
 };
 
-App.create = function(fields, cb) {
-  var query = this.schema.insert(fields).returning('*').toQuery();
+App.create = function (fields, cb) {
+  var query = this.schema.insert(fields).returning("*").toQuery();
 
   utils.findOne(query, cb);
 };
 
-App.delete = function(id, cb) {
-  var query = this.schema.delete()
+App.delete = function (id, cb) {
+  var query = this.schema
+    .delete()
     .from(this.schema)
     .where(this.schema.id.equals(id))
     .toQuery();
@@ -51,12 +58,14 @@ App.delete = function(id, cb) {
   db.query(query.text, query.values, cb);
 };
 
-App.update = function(fields, cb) {
+App.update = function (fields, cb) {
   var id = fields.id;
   delete fields.id;
-  var query = this.schema.update(fields)
+  var query = this.schema
+    .update(fields)
     .where(this.schema.id.equals(id))
-    .returning('*').toQuery();
+    .returning("*")
+    .toQuery();
 
   utils.findOne(query, cb);
 };
