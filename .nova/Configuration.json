@@ -1,6 +1,0 @@
-{
-  "editor.default_syntax" : "javascript",
-  "taskfinder.auto-node" : true,
-  "workspace.preview_type" : "custom",
-  "workspace.preview_url" : "http:\/\/127.0.0.1:3000"
-}
