@@ -6,7 +6,11 @@
     }
   },
   "environment" : {
-    "DEBUG" : "express:*"
+    "AC_GITHUB_CLIENT_ID" : "7305bb86cd53685a9373",
+    "AC_GITHUB_SECRET" : "ae1300face182ddaf726ff00b2b1d0e3daa2b701",
+    "AC_GITHUB_USERS" : "armadsen",
+    "AC_ROOT_UR" : "http:\/\/127.0.0.1:3000\/",
+    "DATABASE_URL" : "postgresql:\/\/localhost:5432"
   },
   "identifier" : "040C8528-73B0-458B-AE66-1F2D50C0A895",
   "openLogOnRun" : "start"
