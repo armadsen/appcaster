@@ -2,6 +2,8 @@
 
 Appcaster is a release manager.  It can be used to upload builds, organise them into channels, and then release them to users.
 
+This is a fork of the original with some minor updates. I cannot provide any support for it whatsoever.
+
 ### API documentation
 
 The Appcaster documentation can be found in the [Appcaster GitHub wiki](https://github.com/mekentosj/appcaster/wiki).
