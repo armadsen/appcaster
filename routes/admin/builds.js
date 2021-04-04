@@ -31,7 +31,7 @@ module.exports = {
   },
 
   delete: function(req, res, next) {
-    Build.delete(req.param('id'), function(err) {
+    Build.delete(req.params.id, function(err) {
       if (err) return next(err);
       res.flash.success('Build deleted');
       res.redirect('/admin/builds');
@@ -40,7 +40,7 @@ module.exports = {
 
   patch: function(req, res, next) {
     var fields = req.body.build;
-    fields.id = req.param('id');
+    fields.id = req.params.id;
 
     Build.update(fields, function(err, build) {
       if (err) {
@@ -54,7 +54,7 @@ module.exports = {
   },
 
   release: function(req, res, next) {
-    Build.find(req.param('id'), function(err, build) {
+    Build.find(req.params.id, function(err, build) {
       if (err) return next(err);
       if (!build) return next(new errors.NotFound('Build not found'));
 
@@ -73,7 +73,7 @@ module.exports = {
   },
 
   show: function(req, res, next) {
-    Build.find(req.param('id'), function(err, build) {
+    Build.find(req.params.id, function(err, build) {
       if (err) return next(err);
       if (!build) return next(new errors.NotFound('Build not found'));
 
@@ -90,7 +90,7 @@ module.exports = {
   },
 
   edit: function(req, res, next) {
-    Build.find(req.param('id'), function(err, build) {
+    Build.find(req.params.id, function(err, build) {
       if (err) return next(err);
       if (!build) return next(new errors.NotFound('Build not found'));
       res.render('admin/builds/edit', { flash: req.flash(), build: build });
@@ -101,7 +101,7 @@ module.exports = {
     var channelIds = req.body.releases  && req.body.releases.channel_ids
       ? req.body.releases.channel_ids : [];
 
-    Build.updateReleasesForBuildId(req.param('id'), channelIds, function(err, build) {
+    Build.updateReleasesForBuildId(req.params.id, channelIds, function(err, build) {
       if (err) return next(err);
       res.flash.success('Channels updated');
       res.redirect('/admin/builds/' + build.id + '/release');

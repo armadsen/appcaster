@@ -26,7 +26,7 @@ module.exports = {
   },
 
   delete: function(req, res, next) {
-    Client.delete(req.param('id'), function(err) {
+    Client.delete(req.params.id, function(err) {
       if (err) return next(err);
       res.flash.success('Client deleted');
       res.redirect('/admin/clients');
@@ -35,7 +35,7 @@ module.exports = {
 
   patch: function(req, res, next) {
     var fields = req.body.client;
-    fields.id = req.param('id');
+    fields.id = req.params.id;
 
     Client.update(fields, function(err, client) {
       if (err) {
@@ -49,7 +49,7 @@ module.exports = {
   },
 
   show: function(req, res, next) {
-    Client.find(req.param('id'), function(err, client) {
+    Client.find(req.params.id, function(err, client) {
       if (err) return next(err);
       if (!client) return next(new errors.NotFound('Client not found'));
       res.render('admin/clients/edit', { flash: req.flash(), client: client });

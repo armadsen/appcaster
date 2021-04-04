@@ -27,7 +27,7 @@ module.exports = {
   },
 
   delete: function(req, res, next) {
-    Channel.delete(req.param('id'), function(err) {
+    Channel.delete(req.params.id, function(err) {
       if (err) return next(err);
       res.flash.success('Channel deleted');
       res.redirect('/admin/channels');
@@ -36,7 +36,7 @@ module.exports = {
 
   patch: function(req, res, next) {
     var fields = req.body.channel;
-    fields.id = req.param('id');
+    fields.id = req.params.id;
 
     Channel.update(fields, function(err, channel) {
       if (err) {
@@ -50,7 +50,7 @@ module.exports = {
   },
 
   show: function(req, res, next) {
-    Channel.find(req.param('id'), function(err, channel) {
+    Channel.find(req.params.id, function(err, channel) {
       if (err) return next(err);
       if (!channel) return next(new errors.NotFound('Channel not found'));
       res.render('admin/channels/edit', { flash: req.flash(), channel: channel });

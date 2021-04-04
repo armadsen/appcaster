@@ -29,7 +29,7 @@ module.exports = {
   },
 
   delete: function(req, res, next) {
-    App.delete(req.param('id'), function(err) {
+    App.delete(req.params.id, function(err) {
       if (err) return next(err);
       res.flash.success('App deleted');
       res.redirect('/admin/apps');
@@ -38,7 +38,7 @@ module.exports = {
 
   patch: function(req, res, next) {
     var fields = req.body.app;
-    fields.id = req.param('id');
+    fields.id = req.params.id;
 
     App.update(fields, function(err, app) {
       if (err) {
@@ -52,7 +52,7 @@ module.exports = {
   },
 
   show: function(req, res, next) {
-    App.find(req.param('id'), function(err, app) {
+    App.find(req.params.id, function(err, app) {
       if (err) return next(err);
       if (!app) return next(new errors.NotFound('App not found'));
       res.render('admin/apps/edit', { flash: req.flash(), app: app });

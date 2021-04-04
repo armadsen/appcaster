@@ -10,8 +10,8 @@ module.exports = {
 
   show: function(req, res, next) {
     Appcast.find({
-      app_url: req.param('url_slug'),
-      channel_url: req.param('channel_url_slug')
+      app_url: req.params.url_slug,
+      channel_url: req.params.channel_url_slug
     }, function(err, appcast) {
       if (!appcast) {
         return res.send(200);
@@ -33,9 +33,9 @@ module.exports = {
 
   download: function(req, res, next) {
     Appcast.findBuildByVersion({
-      app_url: req.param('url_slug'),
-      channel_url: req.param('channel_url_slug'),
-      version: req.param('version')
+      app_url: req.params.url_slug,
+      channel_url: req.params.channel_url_slug,
+      version: req.params.version
     }, function(err, appcast) {
       if (err) return next(err);
 
@@ -51,8 +51,8 @@ module.exports = {
 
   downloadLatest: function(req, res, next) {
     Appcast.findLatest({
-      app_url: req.param('url_slug'),
-      channel_url: req.param('channel_url_slug')
+      app_url: req.params.url_slug,
+      channel_url: req.params.channel_url_slug
     }, function(err, appcast) {
       if (err) return next(err);
 
@@ -68,8 +68,8 @@ module.exports = {
 
   downloadLatestDMG: function(req, res, next) {
     Appcast.findLatest({
-      app_url: req.param('url_slug'),
-      channel_url: req.param('channel_url_slug')
+      app_url: req.params.url_slug,
+      channel_url: req.params.channel_url_slug
     }, function(err, appcast) {
       if (err) return next(err);
 
@@ -86,9 +86,9 @@ module.exports = {
 
   releaseNotes: function(req, res, next) {
     Appcast.findBuildByVersion({
-      app_url: req.param('url_slug'),
-      channel_url: req.param('channel_url_slug'),
-      version: req.param('version')
+      app_url: req.params.url_slug,
+      channel_url: req.params.channel_url_slug,
+      version: req.params.version
     }, function(err, appcast) {
       if (err) return next(err);
 
@@ -107,8 +107,8 @@ module.exports = {
 
   latestReleaseNotes: function(req, res, next) {
     Appcast.findLatest({
-      app_url: req.param('url_slug'),
-      channel_url: req.param('channel_url_slug')
+      app_url: req.params.url_slug,
+      channel_url: req.params.channel_url_slug
     }, function(err, appcast) {
       if (err) return next(err);
 
