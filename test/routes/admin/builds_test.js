@@ -13,7 +13,7 @@ function makeBuild() {
     minimum_system_version: 'Mac OS 10.8.3',
     length: 123456,
     download_url: 'https://example.com/papers-123.dmg',
-    signature: 'vczxjlvcxkovxzcjljk'
+    edSignature: 'vczxjlvcxkovxzcjljk'
   };
 }
 

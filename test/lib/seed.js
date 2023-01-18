@@ -20,7 +20,7 @@ var builds = [{
   minimum_system_version: 'Mac OS 10.8.2',
   length: 123456,
   download_url: 'https://example.com/papers-abc.dmg',
-  signature: 'kxajfqhofk32fmpanc',
+  edSignature: 'kxajfqhofk32fmpanc',
   notes: 'This should be _Markdown_'
 }, {
   app_id: 1,
@@ -32,7 +32,7 @@ var builds = [{
   minimum_system_version: 'Mac OS 10.8.2',
   length: 123458,
   download_url: 'https://example.com/papers-cde.dmg',
-  signature: 'gfmkpo20qdsdaljkhfdas',
+  edSignature: 'gfmkpo20qdsdaljkhfdas',
   downloads: 30,
   download_limit: 30,
   notes: 'This should be _Markdown_'

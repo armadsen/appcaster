@@ -18,7 +18,7 @@ function makeBuildFields() {
     minimum_system_version: 'Mac OS X 10.8',
     length: 123456,
     download_url: 'http://aws.example.com/id-1234/papers.dmg',
-    signature: '123i91urfewisaf'
+    edSignature: '123i91urfewisaf'
   };
 }
 

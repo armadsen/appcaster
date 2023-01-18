@@ -32,7 +32,7 @@ buildJson=$(cat <<SETVAR
   "minimum_system_version": "10.6.0",
   "length": "$fileSize",
   "download_url": "$downloadUrl$fileName",
-  "signature": "$dsaSignature"
+  "edSignature": "$edSignature"
 }
 SETVAR)
 

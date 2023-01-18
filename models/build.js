@@ -36,9 +36,10 @@ Build.schema = sql.define({
     { name: "minimum_system_version", dataType: "varchar(20)" },
     { name: "length", dataType: "bigint NOT NULL" },
     { name: "download_url", dataType: "varchar(255)" },
+    { name: "signature", dataType: "varchar(100)" },
     {
-      name: "signature",
-      dataType: "varchar(100) NOT NULL CHECK (signature <> '')",
+      name: "edSignature",
+      dataType: "varchar(100) NOT NULL CHECK (edSignature <> '')",
     },
     {
       name: "publication_date",
