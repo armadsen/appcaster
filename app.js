@@ -43,6 +43,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(middleware.flash);
 
+app.use(basicAuth( { authorizer: middleware.apiAuth } ));
+
 app.use(expressLayouts);
 app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");

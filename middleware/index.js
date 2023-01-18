@@ -13,6 +13,7 @@ module.exports = Middleware = {
     console.log("Running apiAuth");
     return basicAuth(function (httpUser, httpPassword, next) {
       Client.auth(httpUser, httpPassword, function (err, user) {
+        console.log("ran apiAuth" + err + user);
         if (err) {
           console.log("ran apiAuth" + err);
           next(err);
