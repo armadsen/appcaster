@@ -26,7 +26,7 @@ app.use("/js/marked/", express.static("./node_modules/marked/lib/"));
 app.use(logger("combined"));
 
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(
   methodOverride(function (req, res) {
     if (req.body && typeof req.body === "object" && "_method" in req.body) {
