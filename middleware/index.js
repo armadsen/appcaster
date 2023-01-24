@@ -10,6 +10,7 @@ module.exports = Middleware = {
   flash: require("./flash"),
 
   apiAuth: function () {
+    console.log("Running apiAuth");
     var client = new Client();
     return basicAuth({
       authorizer: client.auth,

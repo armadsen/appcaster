@@ -62,15 +62,20 @@ Build.countDownload = function (build) {
 };
 
 Build.createWithAppUrl = function (urlSlug, buildFields, cb) {
+  console.log("Build.createWithAppUrl start");
   var channels = buildFields.channels;
   delete buildFields.channels;
 
   App.findByUrlSlug(
     urlSlug,
     function (err, app) {
+      console.log("finding by url");
       var query;
 
-      if (err) return cb(new Error("No app found"));
+      if (err) {
+        console.log("failed to find app: ${err}");
+        return cb(new Error("No app found"));
+      }
 
       buildFields.app_id = app.id;
       query = this.schema.insert(buildFields).returning("*").toQuery();
@@ -81,7 +86,9 @@ Build.createWithAppUrl = function (urlSlug, buildFields, cb) {
         // Release if any channels have been specified
         if (channels && channels.length && build) {
           Channel.getIdsForNames(app.id, channels, function (err, channelIds) {
-            if (err) return cb(err);
+            if (err) {
+              return cb(err);
+            }
 
             if (channelIds && channelIds.length) {
               Build.updateReleasesForBuildId(build.id, channelIds, function () {
@@ -92,6 +99,7 @@ Build.createWithAppUrl = function (urlSlug, buildFields, cb) {
             }
           });
         } else {
+          console.log("channels or build missing: ${err}");
           cb(err, build);
         }
       });

@@ -24,14 +24,23 @@ Client.schema = sql.define({
 });
 
 Client.auth = function (name, password, cb) {
+  console.log("client auth start");
   var query = this.schema
     .select("*")
     .where(this.schema.name.equals(name))
     .toQuery();
 
   utils.findOne(query, function (err, user) {
+    console.log("client auth findOne");
     if (err || !user) return cb(err);
-    cb(null, bcrypt.compareSync(password, user.hashed_password) ? user : null);
+    console.log("client auth found user");
+    if (bcrypt.compareSync(password, user.hashed_password)) {
+      console.log("client auth password good");
+      cb(null, user);
+    } else {
+      console.log("client auth password bad");
+      cb(null, null);
+    }
   });
 };
 
