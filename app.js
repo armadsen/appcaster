@@ -39,6 +39,15 @@ app.use(
 );
 app.use(cookieParser());
 app.use(cookieSession({ secret: "Gorm Quarterly" }));
+app.use(function(req, res, next) {
+  if (req.session && !req.session.regenerate) {
+    req.session.regenerate = function(cb) { cb(); };
+  }
+  if (req.session && !req.session.save) {
+    req.session.save = function(cb) { cb(); };
+  }
+  next();
+});
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(middleware.flash);
