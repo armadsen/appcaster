@@ -99,7 +99,7 @@ module.exports = {
       res.render('release_notes', {
         appcast: appcast,
         build: appcast.build,
-        notes: marked(appcast.build.notes || ''),
+        notes: marked.parse(appcast.build.notes || ''),
         layout: 'release-notes-layout'
       });
     });
@@ -119,7 +119,7 @@ module.exports = {
       res.render('release_notes', {
         appcast: appcast,
         build: appcast.build,
-        notes: marked(appcast.build.notes || ''),
+        notes: marked.parse(appcast.build.notes || ''),
         layout: 'release-notes-layout'
       });
     });
