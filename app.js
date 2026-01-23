@@ -108,10 +108,7 @@ app.get(
   authSuccess
 );
 
-app.post(
-  "/apps/:url_slug/builds",
-  /*middleware.apiAuth(),*/ routes.builds.create
-);
+app.post("/apps/:url_slug/builds", middleware.apiAuth(), routes.builds.create);
 app.get("/apps/:url_slug/:channel_url_slug/appcast.xml", routes.apps.show);
 
 app.get(
